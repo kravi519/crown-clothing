@@ -4,7 +4,7 @@ import './cart-icon.style.scss';
 import {connect} from 'react-redux';
 import { toggleCartHidden } from '../../redux/cart/cart.action';
 const CartIcon = ({toggleCartHidden}) =>(
-    <div className='cart-icon' onClick={toggleCartHidden}>
+    <div className='cart-icon' onClick={() => toggleCartHidden()}>
         <ShoppingIcon className='shopping-icon' />
         <span className='item-count'>0</span>
 
