@@ -14,6 +14,7 @@ import CheckoutPage from './pages/checkout/checkout.component';
 
 class App extends React.Component {
   unsubscribeFromAuth = null
+
   componentDidMount(){
     const{setCurrentUser} = this.props;
     this.unsubscribeFromAuth = auth.onAuthStateChanged( async userAuth =>{
@@ -24,7 +25,7 @@ class App extends React.Component {
              id: snapShot.id,
              ...snapShot.data()
            })      
-       })        
+       }) 
       }  else{
         setCurrentUser(userAuth);
       }     
