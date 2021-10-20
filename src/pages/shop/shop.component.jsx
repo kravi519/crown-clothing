@@ -1,46 +1,29 @@
 import React from 'react';
-import CollectionsOverview from '../../components/collections-overview/collections-overview.component';
 import { Route } from 'react-router';
-import CollectionPage from '../collection/collection.component';
-import { firestore, convertCollctionsSnapShotToMap } from '../../firebase/firebase.util';
 import {connect} from 'react-redux';
-import { updateCollections } from '../../redux/shop/shop.action';
-import  WithSpinner  from '../../components/with-spinner/with-spinner.component';
+import { fetchCollectionStart } from '../../redux/shop/shop.action';
+import {CollectionsOverviewContainer} from '../../components/collections-overview/collections-overview.container';
+import { CollectionContainer } from '../collection/collection.container';
 
-const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview);
-const CollectionPageWithSpinner = WithSpinner(CollectionPage);
 class ShopPage extends React.Component {  
-    state = {
-        loading: true
-    };
 
-    unSubscribeFromSnapShot = null;
-    componentDidMount(){
-        const {updateCollections} = this.props;
-        const collectionRef = firestore.collection('collections');
-
-        collectionRef.get().then(snapshot =>{                
-            const collectionsMap = convertCollctionsSnapShotToMap(snapshot);
-            updateCollections(collectionsMap);
-            this.setState({loading: false});
-        })        
+    componentDidMount(){        
+        const {fetchCollectionStart} = this.props;      
+        fetchCollectionStart();
     }
-    render(){
+
+    render(){        
         const {match} = this.props;
-        const {loading} = this.state;
         return (     
             <div className='shop-page'>
-                < Route exact path={`${match.path}`} render={(props) => 
-                <CollectionsOverviewWithSpinner isLoading={loading} {...props} />}/>
-                < Route path={`${match.path}/:collectionId`} render={(props)=> 
-                <CollectionPageWithSpinner isLoading={loading} {...props} />}/>
+                < Route exact path={`${match.path}`} component={CollectionsOverviewContainer}/>
+                < Route path={`${match.path}/:collectionId`} component={CollectionContainer}/>
             </div>
         );
     }
 }
 
 const mapDispatchToProps = dispatch => ({    
-    updateCollections: collectionsMap =>         
-        dispatch(updateCollections(collectionsMap))    
+    fetchCollectionStart: () =>  dispatch(fetchCollectionStart())
 })
 export default connect(null, mapDispatchToProps)(ShopPage);

@@ -51,6 +51,15 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     return await batch.commit();
   }
 
+  export const getCurrentUser = () =>{
+     return new Promise((resolve, reject) => {
+       const unSubscribe = auth.onAuthStateChanged(userAuth => {
+         unSubscribe();
+         resolve(userAuth);
+       }, reject) 
+     })
+  }
+
   export const convertCollctionsSnapShotToMap = (collections) =>{
     const transformedCollection = collections.docs.map(doc => {
       const {title, items} = doc.data();
@@ -70,8 +79,8 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
-const provider = new firebase.auth.GoogleAuthProvider();
-provider.setCustomParameters({ prompt: 'select_account' });
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
 export default firebase;
